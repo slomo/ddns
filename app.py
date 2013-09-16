@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import psycopg2
 import flask
-
+import ldap
 
 app = flask.Flask(__name__)
 app.config.from_pyfile('settings.py')
@@ -15,11 +15,31 @@ con = psycopg2.connect(
 
 
 def authenticate(username, password):
+
+    def _escape(s, wildcard=False):
+        chars_to_escape = ['\\',',','=','+','<','>',';','"','\'','#','(',')','\0']
+
+        if not wildcard:
+            chars_to_escape.append('*')
+
+        escape = lambda x,y: x.replace(y,'\%02X' % ord(y))
+
+        return reduce(escape, chars_to_escape, s)
+
+
+    def _format_dn(attr, with_base_dn = True):
+        if with_base_dn:
+            attr.extend(app.config['LDAP']['base_dn'])
+
+        dn = ['%s=%s' % (item[0], _escape(item[1])) for item in attr]
+
+        return ','.join(dn)
+
     ldap.protocol_version = 3
     l = ldap.initialize(app.config['LDAP']['host'])
     l.set_option( ldap.OPT_X_TLS_DEMAND, True )
     try:
-        user_dn = self._format_dn([('uid', username)])
+        user_dn = _format_dn([('uid', username)])
         l.simple_bind_s(user_dn, password)
         return True
     except ldap.INVALID_CREDENTIALS:
