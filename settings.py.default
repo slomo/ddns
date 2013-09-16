@@ -1,0 +1,13 @@
+DEBUG = False
+
+DATABASE = {
+    'host': 'localhost',
+    'database': 'dyndns',
+    'user': 'dydns',
+    'password': 'mysupersecretpassword'
+}
+
+LDAP = {
+    'host': 'ldaps://host',
+    'base_dn': [('ou', 'people'), ('dc', 'example'), ('dc', 'org')],
+}
