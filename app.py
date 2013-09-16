@@ -65,4 +65,4 @@ def update_domain(user):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host = '::')
