@@ -66,13 +66,13 @@ def update_domain(user):
 
     cur = con.cursor()
     cur.execute(
-        'UPDATE records SET content=%s, change_date=now()' +
-        'WHERE name=%s, type="A";', (ip, domain))
+        'UPDATE records SET content=%s, change_date=now() ' +
+        'WHERE name=%s AND type=\'A\';', (ip, domain))
 
     if cur.rowcount < 1:
         cur.execute(
             'INSERT INTO records (domain_id, name, type, content, ttl, change_date) ' +
-            'SELECT d.id, %s, "A", %s, 60, now() FROM domains d WHERE d.name = "ddns.spline.de"',
+            'SELECT d.id, %s, \'A\', %s, 60, now() FROM domains d WHERE d.name = \'ddns.spline.de\'',
             (domain, ip)
         )
         
