@@ -76,7 +76,7 @@ def update_domain(user):
             (domain, ip)
         )
         
-    conn.commit()    
+    con.commit()    
     cur.close()
     
     return 204
